@@ -1,0 +1,2 @@
+Foswiki::Contrib::JsonRpcContrib,>=2.00,perl,Required. 
+Foswiki::Plugins::FlexFormPlugin,>=2.70,perl,Optional. 

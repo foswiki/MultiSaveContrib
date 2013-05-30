@@ -1,0 +1,96 @@
+%META:TOPICINFO{author="micha" comment="reprev" date="1369921159" format="1.1" reprev="3" version="4"}%
+---+!! %TOPIC%
+%SHORTDESCRIPTION%
+
+%TOC%
+
+<nop>%TOPIC% can be used to build wiki applications that change one or more properties in multiple topics in one transaction.
+So users won't have to edit each single topic turn by turn. All changes are submitted to a multi-save backend which then applies them
+automatically. By now, only !DataForm properties can be changed. A further version of this extension will allow to change other properties
+as well.
+
+This extension is heavily inspired by Foswiki:Extensions/MultiTopicSavePlugin but strips down some of its
+features while adding new ones thus rendering its interface incompatible to !MultiTopicSavePlugin. The basic idea how to transmit
+a multi-save change still remains similarly.
+
+Rendering of input forms is best delegated to Foswiki:Extensions/FlexFormPlugin which will use the Foswiki's core features to render
+!DataForm edit widgets.
+
+---++ Usage
+
+A multi-save form is created using a formatted search like this:
+
+<verbatim class="tml">
+<form class="jqMultiSave" name="MyMultiSave">
+%DBQUERY{"form='TestForm'"
+  header="<table class='foswikiTable'>
+    <tr><th>Topic</th><th>Field1</th><th><th>Field2</th><th>Field3</th></tr>$n"
+  footer="</table>"
+  separator="$n"
+  format="<tr><td> [[$web.$topic]] </td><td> 
+    $percntRENDERFOREDIT{topic=\"$web.$topic\"
+      fields=\"Field1, Field2, Field3\"
+      format=\"$edit\"
+      separator=\" </td><td> \"
+      Field1_name=\"multisave{$web.$topic}{Field1}\"
+      Field2_name=\"multisave{$web.$topic}{Field2}\"
+      Field3_name=\"multisave{$web.$topic}{Field3}\"
+    }$percnt 
+    </td></tr>"
+}%
+%BUTTON{"Save" icon="disk" type="submit"}%
+</form>
+%JQREQUIRE{"multisave"}%
+</verbatim>
+
+There are a couple of things to note:
+
+There's a =%<nop>JQREQUIRE{"multisave"}%= that will load the javascript required to handle all forms having a css class ="jqMultiSave"=
+This will attach a jquery.multisave instance to this form.
+
+The multi-save form will be posted to the appropriate jsonrpc endpoint of this extension asynchronously.
+
+Results by the jsonrpc endpoint are processed by the jquery.multisave javascript code and displayed in a message box following the form.
+
+The multi-save action will also transmit the form's name which helps to identify it from other multi-save wiki applications in subsequent =beforeSaveHandler= and =afterSaveHandler= (see below).
+
+The formatted search in the example looks up topics that have a specific !TestForm attached to it. In this example !TestForm comprises of at least three formfield Field1, Field2, Field3.
+
+The formatted search makes use of !FlexFormPlugin's %RENDERFOREDIT macro that will generate the edit interface based on the !DataForm definition of !TestForm.
+
+The form elements used to edit each formfield requires it's =name= attribute to be altered in a specific way so that <nop>%TOPIC% knows where to save this formfield. 
+It must be of the form 
+
+<verbatim>multisave{web.topic}{fieldname}</verbatim>
+
+For instance, the Field1_name parameter in the example above will override the normal =name= attribute used by
+%RENDERFOREDIT while creating an edit widget for that element. So changing =Field1= in a topic <nop>FooWeb.BarTopic will performed by
+an form element such as:
+
+<verbatim class="tml">
+<input type="text" size="75" name="multisave{FooWeb.BarTopic}{Field1}" value="..." />
+</verbatim>
+
+All form elements that changed their values will be flagged so using css automatically. Only these will be transferred to the multi-save backend.
+
+---++ Adding beforeSaveHander and afterSaveHandler
+
+---++ Installation Instructions
+
+%$INSTALL_INSTRUCTIONS%
+
+---++ Info
+<!--
+   * Set SHORTDESCRIPTION = %$SHORTDESCRIPTION%
+-->
+
+|  Author(s): | Michael Daum|
+|  Copyright: | &copy; 2013 Michael Daum http://michaeldaumconsulting.com |
+|  License: | [[http://www.gnu.org/licenses/gpl.html][GPL (Gnu General Public License)]] |
+|  Release: | %$RELEASE% |
+|  Version: | %$VERSION% |
+|  Change History: | <!-- versions below in reverse order -->&nbsp; |
+|  30 May 2013: | initial release |
+|  Dependencies: | %$DEPENDENCIES% |
+|  Home page: | Foswiki:Extensions/%TOPIC% |
+|  Support: | Foswiki:Support/%TOPIC% |
