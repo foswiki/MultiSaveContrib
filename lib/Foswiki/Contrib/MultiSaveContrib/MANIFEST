@@ -3,7 +3,10 @@ lib/Foswiki/Contrib/MultiSaveContrib/Config.spec 0644
 lib/Foswiki/Contrib/MultiSaveContrib/Core.pm 0644
 lib/Foswiki/Contrib/MultiSaveContrib/JQuery.pm 0644
 lib/Foswiki/Contrib/MultiSaveContrib.pm 0644
+pub/System/MultiSaveContrib/jquery.multisave.css 0644
+pub/System/MultiSaveContrib/jquery.multisave.css.gz 0644
 pub/System/MultiSaveContrib/jquery.multisave.js 0644
 pub/System/MultiSaveContrib/jquery.multisave.js.gz 0644
+pub/System/MultiSaveContrib/jquery.multisave.uncompressed.css 0644
 pub/System/MultiSaveContrib/jquery.multisave.uncompressed.js 0644
 pub/System/MultiSaveContrib/Makefile 0644

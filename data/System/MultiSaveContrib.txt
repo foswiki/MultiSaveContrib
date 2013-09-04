@@ -90,6 +90,7 @@ All form elements that changed their values will be flagged so using css automat
 |  Release: | %$RELEASE% |
 |  Version: | %$VERSION% |
 |  Change History: | <!-- versions below in reverse order -->&nbsp; |
+|  04 Sep 2013: | fixed manifest |
 |  30 May 2013: | initial release |
 |  Dependencies: | %$DEPENDENCIES% |
 |  Home page: | Foswiki:Extensions/%TOPIC% |
