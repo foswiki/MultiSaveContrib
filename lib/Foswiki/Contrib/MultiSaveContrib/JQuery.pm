@@ -12,7 +12,7 @@ sub new {
     my $this = bless(
         $class->SUPER::new(
             name       => 'MultiSave',
-            version    => '0.01',
+            version    => '0.03',
             author     => 'Michael Daum',
             homepage   => 'http://michaeldaumconsulting.com',
             puburl => '%PUBURLPATH%/%SYSTEMWEB%/MultiSaveContrib',
@@ -31,7 +31,7 @@ sub new {
 __END__
 Foswiki - The Free and Open Source Wiki, http://foswiki.org/
 
-Copyright (C) 2013 Michael Daum http://michaeldaumconsulting.com
+Copyright (C) 2013-2014 Michael Daum http://michaeldaumconsulting.com
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License

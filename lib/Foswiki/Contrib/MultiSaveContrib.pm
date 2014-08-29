@@ -1,6 +1,6 @@
 # Extension for Foswiki - The Free and Open Source Wiki, http://foswiki.org/
 #
-# Copyright (C) 2013 Michael Daum http://michaeldaumconsulting.com
+# Copyright (C) 2013-2014 Michael Daum http://michaeldaumconsulting.com
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -21,8 +21,8 @@ use warnings;
 use Foswiki::Plugins();
 use Foswiki::Contrib::JsonRpcContrib ();
 
-our $VERSION = '1.01';
-our $RELEASE = '1.01';
+our $VERSION = '1.02';
+our $RELEASE = '1.02';
 our $NO_PREFS_IN_TOPIC = 1;
 our $SHORTDESCRIPTION = 'Json-RPC interface to save multiple changes in one transaction';
 our $core;

@@ -1,0 +1,11 @@
+*.gz
+*.swp
+pub/System/MultiSaveContrib/jquery.multisave.js
+pub/System/MultiSaveContrib/jquery.multisave.css
+MultiSaveContrib.md5
+MultiSaveContrib.sha1
+MultiSaveContrib.tgz
+MultiSaveContrib.txt
+MultiSaveContrib.zip
+MultiSaveContrib_installer
+MultiSaveContrib_installer.pl

@@ -1,6 +1,6 @@
 # Extension for Foswiki - The Free and Open Source Wiki, http://foswiki.org/
 #
-# Copyright (C) 2013 Michael Daum http://michaeldaumconsulting.com
+# Copyright (C) 2013-2014 Michael Daum http://michaeldaumconsulting.com
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -21,11 +21,11 @@ use warnings;
 use Foswiki::Func ();
 use Error qw(:try);
 
-use constant DEBUG => 0; # toggle me
+use constant TRACE => 0; # toggle me
 
 ###############################################################################
 sub writeDebug {
-  print STDERR "- MultiSaveContrib - $_[0]\n" if DEBUG;
+  print STDERR "- MultiSaveContrib - $_[0]\n" if TRACE;
 }
 
 ###############################################################################
