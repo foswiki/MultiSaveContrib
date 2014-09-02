@@ -9,7 +9,7 @@
  *
  */
 jQuery(function($) {
-  "use strict";
+"use strict";
   
   $(".jqMultiSave:not(.jqMultiSaveInited)").livequery(function() {
     var $form = $(this), 
