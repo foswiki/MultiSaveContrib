@@ -21,7 +21,7 @@ use warnings;
 use Foswiki::Func ();
 use Error qw(:try);
 
-use constant TRACE => 1; # toggle me
+use constant TRACE => 0; # toggle me
 
 ###############################################################################
 sub writeDebug {
