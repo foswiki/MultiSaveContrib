@@ -21,7 +21,7 @@ use warnings;
 use Foswiki::Func ();
 use Error qw(:try);
 
-use constant TRACE => 0; # toggle me
+use constant TRACE => 1; # toggle me
 
 ###############################################################################
 sub writeDebug {
@@ -110,7 +110,7 @@ sub jsonRpcMultiSave {
     my $webTopic = $1;
     my $fieldName = $2;
     my $fieldValue = $params->{$key};
-    $fieldValue = join(", ", @$fieldValue) if ref($fieldValue);
+    $fieldValue = join(", ", grep {!/^$/} @$fieldValue) if ref($fieldValue);
 
     writeDebug("found changes for $webTopic, $fieldName=$fieldValue");
     $changes{$webTopic}{$fieldName} = $fieldValue;

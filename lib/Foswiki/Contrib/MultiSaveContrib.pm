@@ -21,8 +21,8 @@ use warnings;
 use Foswiki::Plugins();
 use Foswiki::Contrib::JsonRpcContrib ();
 
-our $VERSION = '1.02';
-our $RELEASE = '1.02';
+our $VERSION = '1.10';
+our $RELEASE = '1.10';
 our $NO_PREFS_IN_TOPIC = 1;
 our $SHORTDESCRIPTION = 'Json-RPC interface to save multiple changes in one transaction';
 our $core;
