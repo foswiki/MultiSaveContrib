@@ -1,6 +1,6 @@
 # Extension for Foswiki - The Free and Open Source Wiki, http://foswiki.org/
 #
-# Copyright (C) 2013-2014 Michael Daum http://michaeldaumconsulting.com
+# Copyright (C) 2013-2017 Michael Daum http://michaeldaumconsulting.com
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -98,18 +98,19 @@ sub jsonRpcMultiSave {
 
   writeDebug("called jsonRpcMultiSave()");
   my $wikiName = Foswiki::Func::getWikiName();
-  my $params = $request->params();
+  my @params = $request->multi_param();
   my $formName = $request->param("formName");
 
   writeDebug("saving a $formName") if defined $formName;
 
   # collect required changes
   my %changes = ();
-  foreach my $key (keys %$params) {
-    next unless $key =~ /^multisave{(.*)}{(.*)}$/;
+  foreach my $key (@params) {
+    next if $key eq 'POSTDATA';
+    next unless $key =~ /^multisave\{(.*)\}\{(.*)\}$/;
     my $webTopic = $1;
     my $fieldName = $2;
-    my $fieldValue = $params->{$key};
+    my $fieldValue = $request->param($key);
     $fieldValue = join(", ", grep {!/^$/} @$fieldValue) if ref($fieldValue);
 
     writeDebug("found changes for $webTopic, $fieldName=$fieldValue");

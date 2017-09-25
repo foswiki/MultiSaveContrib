@@ -1,3 +1,4 @@
+!noci
 data/System/MultiSaveContrib.txt 0644
 lib/Foswiki/Contrib/MultiSaveContrib/Config.spec 0644
 lib/Foswiki/Contrib/MultiSaveContrib/Core.pm 0644

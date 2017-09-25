@@ -1,15 +1,15 @@
 /*
- * jQuery MultiSave plugin 0.04
+ * jQuery MultiSave plugin 0.05
  *
- * Copyright (c) 2013-2014 Michael Daum http://michaeldaumconsulting.com
+ * Copyright (c) 2013-2017 Michael Daum http://michaeldaumconsulting.com
  *
  * Dual licensed under the MIT and GPL licenses:
  *   http://www.opensource.org/licenses/mit-license.php
  *   http://www.gnu.org/licenses/gpl.html
  *
  */
-jQuery(function($) {
 "use strict";
+jQuery(function($) {
   
   $(".jqMultiSave:not(.jqMultiSaveInited)").livequery(function() {
     var $form = $(this), 
@@ -29,20 +29,20 @@ jQuery(function($) {
         $.blockUI({message:'<h1>Saving ...</h1>'}); 
       },
 
-      error: function(xhr, status, error) { 
+      error: function(xhr, status) { 
         var json = $.parseJSON(xhr.responseText); 
         $.unblockUI(); 
         $results.show().html("<div class='foswikiErrorMessage'>Error: "+status+" "+json.error.message+"</div>"); 
       },
 
-      success: function(data, status, xhr) { 
+      success: function(data) { 
         var changes = 0; 
 
         $.unblockUI(); 
         $results.empty(); 
 
         if (typeof(data.result.success) !== 'undefined') { 
-          $.each(data.result.success, function(key) { 
+          $.each(data.result.success, function() { 
             changes++;
           }); 
         } 

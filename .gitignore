@@ -1,5 +1,6 @@
 *.gz
 *.swp
+*.jslint
 pub/System/MultiSaveContrib/jquery.multisave.js
 pub/System/MultiSaveContrib/jquery.multisave.css
 MultiSaveContrib.md5
@@ -9,3 +10,4 @@ MultiSaveContrib.txt
 MultiSaveContrib.zip
 MultiSaveContrib_installer
 MultiSaveContrib_installer.pl
+locale/**/*.mo
