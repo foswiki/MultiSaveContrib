@@ -1,6 +1,6 @@
 # Extension for Foswiki - The Free and Open Source Wiki, http://foswiki.org/
 #
-# Copyright (C) 2013-2017 Michael Daum http://michaeldaumconsulting.com
+# Copyright (C) 2013-2022 Michael Daum http://michaeldaumconsulting.com
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -98,10 +98,11 @@ sub jsonRpcMultiSave {
 
   writeDebug("called jsonRpcMultiSave()");
   my $wikiName = Foswiki::Func::getWikiName();
-  my @params = $request->multi_param();
+  my @params = $request->params();
   my $formName = $request->param("formName");
 
   writeDebug("saving a $formName") if defined $formName;
+  #writeDebug("params=".dump(\@params));
 
   # collect required changes
   my %changes = ();
@@ -110,8 +111,8 @@ sub jsonRpcMultiSave {
     next unless $key =~ /^multisave\{(.*)\}\{(.*)\}$/;
     my $webTopic = $1;
     my $fieldName = $2;
-    my $fieldValue = $request->param($key);
-    $fieldValue = join(", ", grep {!/^$/} @$fieldValue) if ref($fieldValue);
+    my @fieldValue = $request->param($key);
+    my $fieldValue = join(", ", grep {!/^$/} @fieldValue);
 
     writeDebug("found changes for $webTopic, $fieldName=$fieldValue");
     $changes{$webTopic}{$fieldName} = $fieldValue;
@@ -162,20 +163,42 @@ sub jsonRpcMultiSave {
     my $mustSave = 0;
     foreach my $fieldName (keys %{$changes{$webTopic}}) {
       my $fieldValue = $changes{$webTopic}{$fieldName};
-      my $oldVal = $meta->get("FIELD", $fieldName);
-      $oldVal = $oldVal->{value} if defined $oldVal;
+      writeDebug("fieldName=$fieldName, fieldValue=$fieldValue");
+      if ($fieldName =~ /^(Set|Local)\+(.*)$/) {
+        my $type = $1;
+        my $prefName = $2;
+        my $oldVal = $meta->get("PREFERENCE", $prefName);
+        $oldVal = $oldVal->{value} if defined $oldVal;
 
-      writeDebug("oldVal=".(defined $oldVal?$oldVal:'undef').", newVal=$fieldValue");
-      if (defined($oldVal) && $oldVal eq $fieldValue) {
-	next;
+        writeDebug("oldVal=".(defined $oldVal?$oldVal:'undef').", newVal=$fieldValue");
+        if (defined($oldVal) && $oldVal eq $fieldValue) {
+          next;
+        }
+
+        $mustSave = 1;
+        $meta->putKeyed('PREFERENCE', {
+          name => $prefName,
+          title => $prefName,
+          value => $fieldValue,
+          type => $type,
+        });
+
+      } else {
+        my $oldVal = $meta->get("FIELD", $fieldName);
+        $oldVal = $oldVal->{value} if defined $oldVal;
+
+        writeDebug("oldVal=".(defined $oldVal?$oldVal:'undef').", newVal=$fieldValue");
+        if (defined($oldVal) && $oldVal eq $fieldValue) {
+          next;
+        }
+
+        $mustSave = 1;
+        $meta->putKeyed('FIELD', {
+          name => $fieldName,
+          title => $fieldName,
+          value => $fieldValue,
+        });
       }
-
-      $mustSave = 1;
-      $meta->putKeyed('FIELD', {
-	name => $fieldName,
-	title => $fieldName,
-	value => $fieldValue,
-      });
     }
       
     next unless $mustSave;

@@ -1,17 +1,15 @@
 /*
- * jQuery MultiSave plugin 0.05
+ * jQuery MultiSave plugin 1.00
  *
- * Copyright (c) 2013-2017 Michael Daum http://michaeldaumconsulting.com
+ * Copyright (c) 2013-2022 Michael Daum http://michaeldaumconsulting.com
  *
- * Dual licensed under the MIT and GPL licenses:
- *   http://www.opensource.org/licenses/mit-license.php
- *   http://www.gnu.org/licenses/gpl.html
+ * Licensed under the GPL license http://www.gnu.org/licenses/gpl.html
  *
  */
 "use strict";
 jQuery(function($) {
   
-  $(".jqMultiSave:not(.jqMultiSaveInited)").livequery(function() {
+  $(".jqMultiSave").livequery(function() {
     var $form = $(this), 
         $results = $("<div class='jqMultiSaveResults'></div>").appendTo($form),
         url = foswiki.getPreference("SCRIPTURL")+"/jsonrpc/MultiSaveContrib/save",
@@ -21,8 +19,14 @@ jQuery(function($) {
     $form.attr("action", url).attr("method","post");
     $form.prepend("<input type='hidden' name='formName' value='"+formName+"' />");
 
-    $form.addClass("jqMultiSaveInited").ajaxForm({
+    $form.ajaxForm({
       dataType:"json",
+
+      beforeSerialize: function() {
+        if (typeof(foswikiStrikeOne) !== 'undefined') {
+          foswikiStrikeOne($form[0]);
+        }
+      },
 
       beforeSubmit: function() { 
         $results.hide();

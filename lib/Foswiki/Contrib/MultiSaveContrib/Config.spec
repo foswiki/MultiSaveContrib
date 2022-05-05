@@ -1,20 +1,19 @@
 # ---+ Extensions
 # ---++ MultiSaveContrib
 
-# **PERL**
+# **PERL EXPERT**
 # Registers the save method to the json-rpc server
 $Foswiki::cfg{JsonRpcContrib}{Handler}{MultiSaveContrib} = {
   "save" => {
     package => "Foswiki::Contrib::MultiSaveContrib",
     function => "jsonRpcMultiSave",
-    options => {},
   }
 };
 
 # ---++ JQueryPlugin
 # ---+++ Extra plugins
 
-# **STRING**
+# **STRING EXPERT**
 $Foswiki::cfg{JQueryPlugin}{Plugins}{MultiSave}{Module} = 'Foswiki::Contrib::MultiSaveContrib::JQuery';
 
 # **BOOLEAN**
