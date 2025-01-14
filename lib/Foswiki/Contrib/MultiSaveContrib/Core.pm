@@ -1,6 +1,6 @@
 # Extension for Foswiki - The Free and Open Source Wiki, http://foswiki.org/
 #
-# Copyright (C) 2013-2022 Michael Daum http://michaeldaumconsulting.com
+# Copyright (C) 2013-2025 Michael Daum http://michaeldaumconsulting.com
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -13,7 +13,18 @@
 # GNU General Public License for more details, published at
 # http://www.gnu.org/copyleft/gpl.html
 
+
 package Foswiki::Contrib::MultiSaveContrib::Core;
+
+=begin TML
+
+---+ package Foswiki::Contrib::MultiSaveContrib::Core
+
+core class for this plugin
+
+an singleton instance is allocated on demand
+
+=cut
 
 use strict;
 use warnings;
@@ -21,14 +32,24 @@ use warnings;
 use Foswiki::Func ();
 use Error qw(:try);
 
+=begin TML
+
+---++ =ClassProperty= TRACE
+
+boolean toggle to enable debugging of this class
+
+=cut
+
 use constant TRACE => 0; # toggle me
 
-###############################################################################
-sub writeDebug {
-  print STDERR "- MultiSaveContrib - $_[0]\n" if TRACE;
-}
+=begin TML
 
-###############################################################################
+---++ ClassMethod new(%opts) -> $core
+
+constructor for a Core object
+
+=cut
+
 sub new {
   my $class = shift;
 
@@ -52,11 +73,21 @@ sub new {
   return $this;
 };
 
-###############################################################################
+=begin TML
+
+---++ ObjectMethod registerHandler($slot, $namespace, $package, $fn, $opts)
+
+registers a callback for the given slot such as
+
+   * beforeSaveHandler
+   * afterSaveHandler
+
+=cut
+
 sub registerHandler {
   my ($this, $slot, $namespace, $package, $fn, $options) = @_;
 
-  writeDebug("registerHandler($namespace, $slot)");
+  _writeDebug("registerHandler($namespace, $slot)");
 
   $this->{handler}{$slot}{$namespace} = {
     package => $package,
@@ -65,7 +96,17 @@ sub registerHandler {
   };
 }
 
-###############################################################################
+=begin TML
+
+---++ ObjectMethod getHandler($slot, $namespace) -> $handler
+
+This method not only returns the hash structure as registered but also
+evaluates any package that the function is registered to.
+
+see =registerHandler()=
+
+=cut
+
 sub getHandler {
   my ($this, $slot, $namespace) = @_;
 
@@ -75,7 +116,7 @@ sub getHandler {
   unless(ref($handler->{function})) {
     
     if (defined $handler->{package}) {
-      writeDebug("compiling $handler->{package} for $namespace");
+      _writeDebug("compiling $handler->{package} for $namespace");
       eval qq(use $handler->{package});
 
       # disable on error
@@ -92,29 +133,40 @@ sub getHandler {
   return $handler;
 }
 
-###############################################################################
+=begin TML
+
+---++ ObjectMethod jsonRpcMultiSave()
+
+handls the save json rpc call
+
+=cut
+
 sub jsonRpcMultiSave {
   my ($this, $session, $request) = @_;
 
-  writeDebug("called jsonRpcMultiSave()");
+  _writeDebug("called jsonRpcMultiSave()");
   my $wikiName = Foswiki::Func::getWikiName();
-  my @params = $request->params();
+  my $params = $request->params();
   my $formName = $request->param("formName");
+  my $forceSave = Foswiki::Func::isTrue($request->param("force"), 0);
+  my $minorChange = Foswiki::Func::isTrue($request->param("minor"), 1);
 
-  writeDebug("saving a $formName") if defined $formName;
-  #writeDebug("params=".dump(\@params));
+  _writeDebug("saving a $formName") if defined $formName;
+  _writeDebug("forceSave=$forceSave");
+  #_writeDebug("params=".dump($params));
 
   # collect required changes
   my %changes = ();
-  foreach my $key (@params) {
+  foreach my $key (keys %$params) {
     next if $key eq 'POSTDATA';
+    _writeDebug("key=$key");
     next unless $key =~ /^multisave\{(.*)\}\{(.*)\}$/;
     my $webTopic = $1;
     my $fieldName = $2;
     my @fieldValue = $request->param($key);
     my $fieldValue = join(", ", grep {!/^$/} @fieldValue);
 
-    writeDebug("found changes for $webTopic, $fieldName=$fieldValue");
+    _writeDebug("found changes for $webTopic, $fieldName=$fieldValue");
     $changes{$webTopic}{$fieldName} = $fieldValue;
   }
 
@@ -126,7 +178,7 @@ sub jsonRpcMultiSave {
     my $result = &{$handler->{function}}($formName, \%changes, $handler->{options});
 
     if (defined $result) {
-      writeDebug("form $key vetoed against any further change");
+      _writeDebug("form $key vetoed against any further change");
       return $result;
     }
   }
@@ -163,14 +215,14 @@ sub jsonRpcMultiSave {
     my $mustSave = 0;
     foreach my $fieldName (keys %{$changes{$webTopic}}) {
       my $fieldValue = $changes{$webTopic}{$fieldName};
-      writeDebug("fieldName=$fieldName, fieldValue=$fieldValue");
+      _writeDebug("fieldName=$fieldName, fieldValue=$fieldValue");
       if ($fieldName =~ /^(Set|Local)\+(.*)$/) {
         my $type = $1;
         my $prefName = $2;
         my $oldVal = $meta->get("PREFERENCE", $prefName);
         $oldVal = $oldVal->{value} if defined $oldVal;
 
-        writeDebug("oldVal=".(defined $oldVal?$oldVal:'undef').", newVal=$fieldValue");
+        _writeDebug("oldVal=".(defined $oldVal?$oldVal:'undef').", newVal=$fieldValue");
         if (defined($oldVal) && $oldVal eq $fieldValue) {
           next;
         }
@@ -187,7 +239,7 @@ sub jsonRpcMultiSave {
         my $oldVal = $meta->get("FIELD", $fieldName);
         $oldVal = $oldVal->{value} if defined $oldVal;
 
-        writeDebug("oldVal=".(defined $oldVal?$oldVal:'undef').", newVal=$fieldValue");
+        _writeDebug("oldVal=".(defined $oldVal?$oldVal:'undef').", newVal=$fieldValue");
         if (defined($oldVal) && $oldVal eq $fieldValue) {
           next;
         }
@@ -201,18 +253,21 @@ sub jsonRpcMultiSave {
       }
     }
       
-    next unless $mustSave;
+    _writeDebug("mustSave=$mustSave");
+    next unless $mustSave || $forceSave;
 
     my $error;
+    my %options = ();
+    $options{minor} = 1 if $minorChange;
     try {
-      writeDebug("saving changes");
-      Foswiki::Func::saveTopic($web, $topic, $meta);
+      _writeDebug("saving changes");
+      $meta->save(%options);
     } catch Error::Simple with {
       $error = shift->stringify();
     };
     if (defined $error) {
       $result{error}{$webTopic} = $error;
-      writeDebug("web=$web, topic=$topic, error=$error");
+      _writeDebug("web=$web, topic=$topic, error=$error");
     } else {
       $result{success}{$webTopic} = 'done';
     }
@@ -227,6 +282,16 @@ sub jsonRpcMultiSave {
   }
 
   return \%result;
+}
+
+=begin TML
+
+---++ StaticMethod _writeDebug()
+
+=cut
+
+sub _writeDebug {
+  print STDERR "- MultiSaveContrib - $_[0]\n" if TRACE;
 }
 
 1;
