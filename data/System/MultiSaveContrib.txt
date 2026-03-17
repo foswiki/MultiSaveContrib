@@ -1,4 +1,4 @@
-%META:TOPICINFO{author="ProjectContributor" comment="" date="1736875465" format="1.1"  version="1"}%
+%META:TOPICINFO{author="ProjectContributor" comment="" date="1773769546" format="1.1" version="1"}%
 ---+!! %TOPIC%
 %FORMFIELD{"Description"}%
 
@@ -98,6 +98,7 @@ automatically. Only these will be transferred to the multi-save backend.
 
 ---++ Change History
 %TABLE{columnwidths="7em" tablewidth="100%"}%
+|  04 Sep 2025: | fixed multisave of date2 fields |
 |  14 Jan 2025: | pod documentation of internal api |
 |  05 May 2022: | fix use if jsonrpc params; add support for saving preference values in addition to formfield values|
 |  25 Sep 2017: | fixed use of =param()= api |
@@ -107,7 +108,7 @@ automatically. Only these will be transferred to the multi-save backend.
 
 %META:FORM{name="PackageForm"}%
 %META:FIELD{name="Author" title="Author" value="Michael Daum"}%
-%META:FIELD{name="Copyright" title="Copyright" value="&copy; 2013-2025 Michael Daum"}%
+%META:FIELD{name="Copyright" title="Copyright" value="&copy; 2013-2026 Michael Daum"}%
 %META:FIELD{name="Description" title="Description" value="%25$SHORTDESCRIPTION%25"}%
 %META:FIELD{name="Home" title="Home" value="Foswiki:Extensions/%TOPIC%"}%
 %META:FIELD{name="License" title="License" value="[[http://www.gnu.org/licenses/gpl.html][GPL (Gnu General Public License)]]"}%

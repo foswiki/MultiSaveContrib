@@ -1,6 +1,6 @@
 # Extension for Foswiki - The Free and Open Source Wiki, http://foswiki.org/
 #
-# Copyright (C) 2013-2025 Michael Daum http://michaeldaumconsulting.com
+# Copyright (C) 2013-2026 Michael Daum http://michaeldaumconsulting.com
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -163,8 +163,8 @@ sub jsonRpcMultiSave {
     next unless $key =~ /^multisave\{(.*)\}\{(.*)\}$/;
     my $webTopic = $1;
     my $fieldName = $2;
-    my @fieldValue = $request->param($key);
-    my $fieldValue = join(", ", grep {!/^$/} @fieldValue);
+    my $fieldValues = $request->param($key);
+    my $fieldValue = ref($fieldValues) ? join(", ", grep {!/^$/} @$fieldValues) : $fieldValues;
 
     _writeDebug("found changes for $webTopic, $fieldName=$fieldValue");
     $changes{$webTopic}{$fieldName} = $fieldValue;
@@ -237,7 +237,7 @@ sub jsonRpcMultiSave {
 
       } else {
         my $oldVal = $meta->get("FIELD", $fieldName);
-        $oldVal = $oldVal->{value} if defined $oldVal;
+        $oldVal = $oldVal->{origvalue} // $oldVal->{value} if defined $oldVal;
 
         _writeDebug("oldVal=".(defined $oldVal?$oldVal:'undef').", newVal=$fieldValue");
         if (defined($oldVal) && $oldVal eq $fieldValue) {

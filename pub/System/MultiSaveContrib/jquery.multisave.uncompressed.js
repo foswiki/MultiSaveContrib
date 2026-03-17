@@ -1,7 +1,7 @@
 /*
  * jQuery MultiSave plugin 1.02
  *
- * Copyright (c) 2013-2025 Michael Daum http://michaeldaumconsulting.com
+ * Copyright (c) 2013-2026 Michael Daum http://michaeldaumconsulting.com
  *
  * Licensed under the GPL license http://www.gnu.org/licenses/gpl.html
  *
@@ -45,7 +45,7 @@ jQuery(function($) {
       },
 
       error: function(xhr, status) { 
-        var json = $.parseJSON(xhr.responseText); 
+        var json = JSON.parse(xhr.responseText); 
         $.unblockUI(); 
 
         console.error(json.error.message);
